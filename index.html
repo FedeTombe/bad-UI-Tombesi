@@ -1,0 +1,214 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confirmación Extrema</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f3f4f6;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .card {
+      background: white;
+      padding: 40px;
+      border-radius: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+      width: 90%;
+      max-width: 500px;
+      text-align: center;
+    }
+
+    h1, h2 {
+      margin-bottom: 20px;
+    }
+
+    p {
+      color: #555;
+    }
+
+    button {
+      border: none;
+      padding: 14px 24px;
+      border-radius: 14px;
+      font-size: 16px;
+      cursor: pointer;
+      color: white;
+      margin-top: 15px;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      opacity: 0.9;
+    }
+
+    button:disabled {
+      background: gray !important;
+      cursor: not-allowed;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid #ccc;
+      margin-top: 10px;
+      font-size: 16px;
+      box-sizing: border-box;
+    }
+
+    .green { background: #22c55e; }
+    .blue { background: #3b82f6; }
+    .red { background: #ef4444; }
+    .purple { background: #a855f7; }
+    .orange { background: #f97316; }
+    .pink { background: #ec4899; }
+    .indigo { background: #6366f1; }
+
+    .hidden {
+      display: none;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      justify-content: center;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h1>Página de Confirmación</h1>
+
+    <div id="paso0">
+      <p>Presioná el botón para comenzar.</p>
+      <button class="green" onclick="siguiente(1)">Aceptar</button>
+    </div>
+
+    <div id="paso1" class="hidden">
+      <h2>¿Estás seguro?</h2>
+      <button class="blue" onclick="siguiente(2)">Sí</button>
+    </div>
+
+    <div id="paso2" class="hidden">
+      <h2>¿MUY seguro?</h2>
+      <button class="red" onclick="iniciarTemporizador()">Totalmente</button>
+    </div>
+
+    <div id="paso3" class="hidden">
+      <h2 id="timerText">Esperá 5 segundos...</h2>
+      <button id="continuarBtn" class="purple hidden" onclick="siguiente(4)">
+        Continuar
+      </button>
+    </div>
+
+    <div id="paso4" class="hidden">
+      <h2>Captcha de seguridad</h2>
+      <p>Escribí: <strong>ACEPTO</strong></p>
+
+      <input type="text" id="captchaInput" />
+
+      <button class="orange" id="captchaBtn" disabled onclick="siguiente(5)">
+        Verificar
+      </button>
+    </div>
+
+    <div id="paso5" class="hidden">
+      <div class="checkbox-container">
+        <input type="checkbox" id="checkbox" style="width:auto" />
+        <label>No deseo NO cancelar la operación</label>
+      </div>
+
+      <button class="pink" id="checkBtn" disabled onclick="siguiente(6)">
+        Continuar
+      </button>
+    </div>
+
+    <div id="paso6" class="hidden">
+      <h2>Encuesta obligatoria</h2>
+
+      <select id="encuesta">
+        <option value="">¿Qué tan decidido estás?</option>
+        <option value="mucho">Muy decidido</option>
+        <option value="medio">Más o menos</option>
+        <option value="nada">No sé qué hago acá</option>
+      </select>
+
+      <button class="indigo" id="encuestaBtn" disabled onclick="siguiente(7)">
+        Finalizar
+      </button>
+    </div>
+
+    <div id="paso7" class="hidden">
+      <h2 style="color:#16a34a">✅ Confirmación de aceptación</h2>
+      <p>Finalmente lograste aceptar después de demasiados pasos.</p>
+    </div>
+  </div>
+
+  <script>
+    function ocultarTodos() {
+      for (let i = 0; i <= 7; i++) {
+        document.getElementById('paso' + i).classList.add('hidden');
+      }
+    }
+
+    function siguiente(numero) {
+      ocultarTodos();
+      document.getElementById('paso' + numero).classList.remove('hidden');
+    }
+
+    function iniciarTemporizador() {
+      siguiente(3);
+
+      let tiempo = 5;
+      const texto = document.getElementById('timerText');
+      const boton = document.getElementById('continuarBtn');
+
+      const intervalo = setInterval(() => {
+        tiempo--;
+        texto.innerText = `Esperá ${tiempo} segundos...`;
+
+        if (tiempo <= 0) {
+          clearInterval(intervalo);
+          texto.innerText = 'Tiempo completado';
+          boton.classList.remove('hidden');
+        }
+      }, 1000);
+    }
+
+    const captchaInput = document.getElementById('captchaInput');
+    const captchaBtn = document.getElementById('captchaBtn');
+
+    captchaInput.addEventListener('input', () => {
+      captchaBtn.disabled = captchaInput.value !== 'ACEPTO';
+    });
+
+    const checkbox = document.getElementById('checkbox');
+    const checkBtn = document.getElementById('checkBtn');
+
+    checkbox.addEventListener('change', () => {
+      checkBtn.disabled = !checkbox.checked;
+    });
+
+    const encuesta = document.getElementById('encuesta');
+    const encuestaBtn = document.getElementById('encuestaBtn');
+
+    encuesta.addEventListener('change', () => {
+      encuestaBtn.disabled = encuesta.value === '';
+    });
+  </script>
+
+</body>
+</html>
+```
